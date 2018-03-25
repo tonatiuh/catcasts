@@ -1,5 +1,11 @@
 # Catcasts
 
+## Why
+
+These are my resulting files after following this great Phoenix tutorial: https://medium.brianemory.com/elixir-phoenix-creating-an-app-part-1-the-setup-6626264be03
+
+## Run the app
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
