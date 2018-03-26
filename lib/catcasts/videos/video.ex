@@ -6,12 +6,12 @@ defmodule Catcasts.Videos.Video do
   use Rummage.Ecto
 
   schema "videos" do
-    field :duration, :string
-    field :thumbnail, :string
-    field :title, :string
-    field :video_id, :string, unique: true
-    field :view_count, :integer
-    belongs_to :user, User
+    field(:duration, :string)
+    field(:thumbnail, :string)
+    field(:title, :string)
+    field(:video_id, :string, unique: true)
+    field(:view_count, :integer)
+    belongs_to(:user, User)
 
     timestamps()
   end

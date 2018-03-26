@@ -5,11 +5,12 @@ defmodule CatcastsWeb.VideoController do
   alias Catcasts.Videos
   alias Catcasts.Videos.{Video, YoutubeData}
 
-  plug :check_video_owner when action in [:delete]
+  plug(:check_video_owner when action in [:delete])
 
   def index(conn, params) do
-    {query, rummage} = Video
-                       |> Video.rummage(params["rummage"])
+    {query, rummage} =
+      Video
+      |> Video.rummage(params["rummage"])
 
     videos = Catcasts.Repo.all(query)
     render(conn, "index.html", videos: videos, rummage: rummage)
@@ -28,6 +29,7 @@ defmodule CatcastsWeb.VideoController do
         conn
         |> put_flash(:error, "Invalid Youtube URL")
         |> render("new.html", changeset: changeset)
+
       regex ->
         YoutubeData.create_or_show_video(conn, regex)
     end

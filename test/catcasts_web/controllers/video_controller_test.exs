@@ -10,21 +10,23 @@ defmodule CatcastsWeb.VideoControllerTest do
 
   def fixture(:video) do
     user = insert(:user)
-    video = Catcasts.Repo.insert! %Video{
-      duration: "PT2M2S",
-      thumbnail: "https://i.ytimg.com/vi/1rlSjdnAKY4/hqdefault.jpg",
-      title: "Super Troopers (2/5) Movie CLIP - The Cat Game (2001) HD",
-      video_id: "1rlSjdnAKY4",
-      view_count: 658281,
-      user_id: user.id
-    }
+
+    video =
+      Catcasts.Repo.insert!(%Video{
+        duration: "PT2M2S",
+        thumbnail: "https://i.ytimg.com/vi/1rlSjdnAKY4/hqdefault.jpg",
+        title: "Super Troopers (2/5) Movie CLIP - The Cat Game (2001) HD",
+        video_id: "1rlSjdnAKY4",
+        view_count: 658_281,
+        user_id: user.id
+      })
 
     {:ok, video: video, user: user}
   end
 
   describe "index" do
     test "lists all videos", %{conn: conn} do
-      conn = get conn, video_path(conn, :index)
+      conn = get(conn, video_path(conn, :index))
       assert html_response(conn, 200) =~ "Cat Videos"
     end
   end
@@ -33,9 +35,10 @@ defmodule CatcastsWeb.VideoControllerTest do
     test "renders form", %{conn: conn} do
       user = insert(:user)
 
-      conn = conn
-             |> assign(:user, user)
-             |> get(video_path(conn, :new))
+      conn =
+        conn
+        |> assign(:user, user)
+        |> get(video_path(conn, :new))
 
       assert html_response(conn, 200) =~ "Add video"
     end
@@ -45,11 +48,12 @@ defmodule CatcastsWeb.VideoControllerTest do
     test "redirects to show when data is valid", %{conn: conn} do
       user = insert(:user)
 
-      conn = conn
-      |> assign(:user, user)
-      |> post(video_path(conn, :create), video: @create_attrs)
+      conn =
+        conn
+        |> assign(:user, user)
+        |> post(video_path(conn, :create), video: @create_attrs)
 
-      video = Video |> Ecto.Query.last |> Catcasts.Repo.one
+      video = Video |> Ecto.Query.last() |> Catcasts.Repo.one()
       assert redirected_to(conn) == video_path(conn, :show, video)
       assert get_flash(conn, :info) == "Video created successfully."
     end
@@ -57,12 +61,13 @@ defmodule CatcastsWeb.VideoControllerTest do
     test "renders errors when data is invalid", %{conn: conn} do
       user = insert(:user)
 
-      conn = conn
-      |> assign(:user, user)
-      |> post(video_path(conn, :create), video: @invalid_attrs)
+      conn =
+        conn
+        |> assign(:user, user)
+        |> post(video_path(conn, :create), video: @invalid_attrs)
 
       assert html_response(conn, 200) =~ "Add video"
-      conn = post conn, video_path(conn, :create), video: @invalid_attrs
+      conn = post(conn, video_path(conn, :create), video: @invalid_attrs)
     end
   end
 
@@ -70,7 +75,7 @@ defmodule CatcastsWeb.VideoControllerTest do
     setup [:create_video]
 
     test "shows chosen video", %{conn: conn, video: video} do
-      conn = get conn, video_path(conn, :show, video)
+      conn = get(conn, video_path(conn, :show, video))
 
       assert html_response(conn, 200) =~ video.title
     end
@@ -80,14 +85,16 @@ defmodule CatcastsWeb.VideoControllerTest do
     setup [:create_video]
 
     test "deletes chosen video", %{conn: conn, video: video, user: user} do
-      conn = conn
-             |> assign(:user, user)
-             |> delete(video_path(conn, :delete, video))
+      conn =
+        conn
+        |> assign(:user, user)
+        |> delete(video_path(conn, :delete, video))
 
       assert redirected_to(conn) == video_path(conn, :index)
-      assert_error_sent 404, fn ->
-        get conn, video_path(conn, :show, video)
-      end
+
+      assert_error_sent(404, fn ->
+        get(conn, video_path(conn, :show, video))
+      end)
     end
   end
 
